@@ -5,10 +5,11 @@
     "noImplicitAny": true,
     "removeComments": true,
     "preserveConstEnums": true,
-    "sourceMap": true,
+    "inlineSourceMap": true,
     "baseUrl": "./",
     "target": "es5",
     "lib": ["es6"],
+    "strict": true,
   },
   "include": [
       "src/index.ts"
