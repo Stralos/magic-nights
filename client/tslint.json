@@ -5,6 +5,14 @@
     "tslint-config-prettier", 
     "tslint-config-airbnb"
   ],
+  "rules": { 
+    "import-name": false, 
+    "variable-name": [ 
+      true, 
+      "ban-keywords" 
+    ], 
+    "ordered-imports": false 
+  }, 
   "linterOptions": {
     "exclude": [
       "config/**/*.js",
