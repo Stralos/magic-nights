@@ -10,8 +10,10 @@
     "variable-name": [ 
       true, 
       "ban-keywords" 
-    ], 
-    "ordered-imports": false 
+    ],
+    "ordered-imports": false ,
+    "object-literal-sort-keys": false,
+    "interface-name": false
   }, 
   "linterOptions": {
     "exclude": [

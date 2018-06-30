@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { HexGrid, Layout, Pattern } from 'react-hexgrid';
 import Hex from '../../../components/Hex';
-import { map } from '../../../placeholderData';
+import { map, hex4 } from '../../../placeholderData';
 import { areNeighbors, getUnexploredNeighbors } from '../../../store/selectors/tile';
 import styled from 'styled-components';
 
@@ -30,13 +30,13 @@ interface IState {
 
 const MAP_CONFIG = {
   HEIGHT: 800,
-  HEXAGON_SIZE: { x: 5, y: 5 },
-  ORIGIN: { x: 0, y: 0 },
+  HEXAGON_SIZE: { x: 3.5, y: 3.5 },
+  ORIGIN: { x: -4, y: -4 },
   SPACING: 1.01,
   WIDTH: 800,
 };
 
-class Map extends React.Component<{}, IState> {
+class Map extends React.PureComponent<{}, IState> {
   public state = {
     map,
     playerPosition: {
@@ -46,7 +46,7 @@ class Map extends React.Component<{}, IState> {
   };
 
   public exploreTile = (tile: IPosition): void => {
-    const newMap = [...this.state.map];
+    const newMap = [...this.state.map, ...hex4];
     this.setState({ map: newMap });
   }
 
@@ -54,7 +54,6 @@ class Map extends React.Component<{}, IState> {
     if (!areNeighbors(this.state.playerPosition, { q, r })) {
       return;
     }
-
     const playerPosition = { q, r };
     this.setState({ playerPosition });
   }
@@ -77,7 +76,7 @@ class Map extends React.Component<{}, IState> {
                 neighbor={areNeighbors(this.state.playerPosition, coordinate)}
               />
               ))}
-            {getUnexploredNeighbors(this.state.playerPosition, map).map(coordinate => (
+            {getUnexploredNeighbors(this.state.playerPosition, this.state.map).map(coordinate => (
               <HexUnexplored
                 {...coordinate}
                 key={`${coordinate.q}${coordinate.r}`}

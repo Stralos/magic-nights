@@ -28,6 +28,16 @@ export const hex3 = [
   { q: 3, r: -3 },
 ];
 
+export const hex4 = [
+  { q: 3, r: -4 },
+  { q: 4, r: -4 },
+  { q: 4, r: -5 },
+  { q: 5, r: -5 },
+  { q: 3, r: -5 },
+  { q: 5, r: -6 },
+  { q: 4, r: -6 },
+];
+
 export const map = [
   ...hex1, ...hex2, ...hex3,
 ];
