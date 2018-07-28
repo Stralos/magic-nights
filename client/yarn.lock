@@ -1022,13 +1022,6 @@ babel-register@^6.26.0:
     mkdirp "^0.5.1"
     source-map-support "^0.4.15"
 
-babel-runtime@6.20.0:
-  version "6.20.0"
-  resolved "https://registry.yarnpkg.com/babel-runtime/-/babel-runtime-6.20.0.tgz#87300bdcf4cd770f09bf0048c64204e17806d16f"
-  dependencies:
-    core-js "^2.4.0"
-    regenerator-runtime "^0.10.0"
-
 babel-runtime@^6.18.0, babel-runtime@^6.22.0, babel-runtime@^6.26.0, babel-runtime@^6.9.2:
   version "6.26.0"
   resolved "https://registry.yarnpkg.com/babel-runtime/-/babel-runtime-6.26.0.tgz#965c7058668e82b55d7bfe04ff2337bc8b5647fe"
@@ -5907,12 +5900,6 @@ react-event-listener@^0.5.1:
     prop-types "^15.6.0"
     warning "^3.0.0"
 
-react-hex@^0.4.1:
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/react-hex/-/react-hex-0.4.1.tgz#cfdcf7f1fba185b4f9ff9bed7e28d5b19c3d59d7"
-  dependencies:
-    babel-runtime "6.20.0"
-
 react-hexgrid@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/react-hexgrid/-/react-hexgrid-1.0.3.tgz#fe0749eaa61d159805c913c8fb78502ce71e247a"
@@ -6148,10 +6135,6 @@ reflect-metadata@^0.1.12:
 regenerate@^1.2.1:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/regenerate/-/regenerate-1.4.0.tgz#4a856ec4b56e4077c557589cae85e7a4c8869a11"
-
-regenerator-runtime@^0.10.0:
-  version "0.10.5"
-  resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.10.5.tgz#336c3efc1220adcedda2c9fab67b5a7955a33658"
 
 regenerator-runtime@^0.11.0, regenerator-runtime@^0.11.1:
   version "0.11.1"
