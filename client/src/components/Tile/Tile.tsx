@@ -8,7 +8,7 @@ interface ITile {
 class Tile extends React.Component<ITile[]> {
   public render() {
     return this.props.map(
-      tile => <Hexagon key={`${tile.q}${tile.r}`} {...tile} />,
+      tile => <Hexagon key={`${tile.q}-${tile.r}`} {...tile} />,
     );
   }
 }

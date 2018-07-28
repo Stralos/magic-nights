@@ -1,5 +1,6 @@
-import ICoordinate from './ICoordinate';
+import Hex from './Hex';
 
 export default interface Tile {
-  hexes: ICoordinate[];
+  id: string;
+  hexes: Hex[];
 }
