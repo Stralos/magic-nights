@@ -3,6 +3,8 @@ import {
   areNeighbors,
   getNeighborCoordinates,
   getUnexploredNeighbors,
+  getExploredNeighbors,
+  getNewTileCenter,
 } from '../index';
 
 describe('Tile selector', () => {
@@ -46,5 +48,42 @@ describe('Tile selector', () => {
     ];
 
     expect(getUnexploredNeighbors(player, map)).toEqual(unexploredNeighbors);
+  });
+
+  it('should return neighbor tiles that are on the map', () => {
+    const hex: ICoordinate = { q: 0, r: 0 };
+    const map: ICoordinate[] = [
+      { q: 1, r: 0 }, { q: 1, r: -1 }, { q: 0, r: -1 },
+    ];
+
+    expect(getExploredNeighbors(hex, map)).toEqual(map);
+  });
+
+  it('should return center tile when exploring hex 4 from bottom', () => {
+    const hex: ICoordinate = { q: 1, r: -2 };
+    const map: ICoordinate[] = [
+      { q: 1, r: -1 },
+      { q: 0, r: -1 },
+    ];
+
+    expect(getNewTileCenter(hex, map)).toEqual({ q: 1, r: -3 });
+  });
+
+  it('should return center tile when exploring hex 4 from right', () => {
+    const hex: ICoordinate = { q: 1, r: -2 };
+    const map: ICoordinate[] = [
+      { q: 2, r: -2 },
+    ];
+    expect(getNewTileCenter(hex, map)).toEqual({ q: 1, r: -3 });
+  });
+
+  it('should return center tile when exploring hex 5 from left', () => {
+    const hex: ICoordinate = { q: 2, r: -1 };
+    const map: ICoordinate[] = [
+      { q: 1, r: 0 },
+      { q: 1, r: -1 },
+      { q: 2, r: 0 },
+    ];
+    expect(getNewTileCenter(hex, map)).toEqual({ q: 3, r: -2 });
   });
 });

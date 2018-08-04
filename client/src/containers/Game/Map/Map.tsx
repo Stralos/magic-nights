@@ -1,8 +1,13 @@
 import * as React from 'react';
 import { HexGrid, Layout, Pattern } from 'react-hexgrid';
 import Hex from '../../../components/Hex';
-import { map, hex4 } from '../../../placeholderData';
-import { areNeighbors, getUnexploredNeighbors } from '../../../store/selectors/tile';
+import { map as gameMap } from '../../../placeholderData';
+import {
+  areNeighbors,
+  getUnexploredNeighbors,
+  getNewTile,
+  getNewTileCenter,
+} from '../../../store/selectors/tile';
 import styled from 'styled-components';
 
 const HexStyled = styled(Hex).attrs<any, any>({
@@ -38,7 +43,7 @@ const MAP_CONFIG = {
 
 class Map extends React.PureComponent<{}, IState> {
   public state = {
-    map,
+    map: gameMap,
     playerPosition: {
       q: 0,
       r: 0,
@@ -46,7 +51,9 @@ class Map extends React.PureComponent<{}, IState> {
   };
 
   public exploreTile = (tile: IPosition): void => {
-    const newMap = [...this.state.map, ...hex4];
+    const newTileCenter = getNewTileCenter(tile, this.state.map);
+    const newTile = getNewTile(newTileCenter);
+    const newMap = [...this.state.map, ...newTile];
     this.setState({ map: newMap });
   }
 
@@ -59,40 +66,41 @@ class Map extends React.PureComponent<{}, IState> {
   }
 
   public render() {
+    const { map, playerPosition } = this.state;
+    const unexploredNeighbors = getUnexploredNeighbors(playerPosition, map);
+
     return (
-      <div>
-        <HexGrid width={MAP_CONFIG.WIDTH} height={MAP_CONFIG.HEIGHT}>
-          <Layout
-            flat={false}
-            size={MAP_CONFIG.HEXAGON_SIZE}
-            spacing={MAP_CONFIG.SPACING}
-            origin={MAP_CONFIG.ORIGIN}
-          >
-            {this.state.map.map(coordinate => (
-              <HexStyled
-                key={`${coordinate.q}${coordinate.r}`}
-                {...coordinate}
-                onClick={this.setPlayerPosition}
-                neighbor={areNeighbors(this.state.playerPosition, coordinate)}
-              />
-              ))}
-            {getUnexploredNeighbors(this.state.playerPosition, this.state.map).map(coordinate => (
-              <HexUnexplored
-                {...coordinate}
-                key={`${coordinate.q}${coordinate.r}`}
-                onClick={this.exploreTile}
-                neighbor={areNeighbors(this.state.playerPosition, coordinate)}
-              />
+      <HexGrid width={MAP_CONFIG.WIDTH} height={MAP_CONFIG.HEIGHT}>
+        <Layout
+          flat={false}
+          size={MAP_CONFIG.HEXAGON_SIZE}
+          spacing={MAP_CONFIG.SPACING}
+          origin={MAP_CONFIG.ORIGIN}
+        >
+          {map.map(coordinate => (
+            <HexStyled
+              key={`${coordinate.q}${coordinate.r}`}
+              {...coordinate}
+              onClick={this.setPlayerPosition}
+              neighbor={areNeighbors(this.state.playerPosition, coordinate)}
+            />
             ))}
-            <Hex q={this.state.playerPosition.q} r={this.state.playerPosition.r} fill={'pat-1'}/>
-          </Layout>
-          <Pattern
-            size={MAP_CONFIG.HEXAGON_SIZE}
-            id="pat-1"
-            link="https://www.lunapic.com/editor/premade/transparent.gif"
-          />
-        </HexGrid>
-      </div>
+          {unexploredNeighbors.map(coordinate => (
+            <HexUnexplored
+              {...coordinate}
+              key={`${coordinate.q}${coordinate.r}`}
+              onClick={this.exploreTile}
+              neighbor={true}
+            />
+          ))}
+          <Hex q={this.state.playerPosition.q} r={this.state.playerPosition.r} fill={'pat-1'}/>
+        </Layout>
+        <Pattern
+          size={MAP_CONFIG.HEXAGON_SIZE}
+          id="pat-1"
+          link="https://www.lunapic.com/editor/premade/transparent.gif"
+        />
+      </HexGrid>
     );
   }
 }
