@@ -86,4 +86,23 @@ describe('Tile selector', () => {
     ];
     expect(getNewTileCenter(hex, map)).toEqual({ q: 3, r: -2 });
   });
+
+  it('should return center tile when exploring hex 6 from bottom', () => {
+    const hex: ICoordinate = { q: 2, r: -2 };
+    const map: ICoordinate[] = [
+      { q: 1, r: -1 },
+    ];
+    expect(getNewTileCenter(hex, map)).toEqual({ q: 3, r: -2 });
+  });
+
+  it('should return center tile when exploring hex 6 from left', () => {
+    const hex: ICoordinate = { q: 2, r: -2 };
+    const map: ICoordinate[] = [
+      { q: 1, r: -1 },
+      { q: 1, r: -2 },
+      { q: 2, r: -3 },
+    ];
+
+    expect(getNewTileCenter(hex, map)).toEqual({ q: 3, r: -2 });
+  });
 });

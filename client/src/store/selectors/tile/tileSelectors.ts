@@ -27,7 +27,9 @@ const getHexNeighborCoordinate = (
   return { q: hex.q + directionShift.q, r: hex.r + directionShift.r };
 };
 
-export const getNeighborCoordinates = (characterPosition: ICoordinate) : ICoordinate[] => {
+export const getNeighborCoordinates = (
+  characterPosition: ICoordinate,
+) : ICoordinate[] => {
   const directions : ICoordinate[] = [
     { q: 1, r: 0 }, { q: 1, r: -1 }, { q: 0, r: -1 },
     { q: -1, r: 0 }, { q: -1, r: +1 }, { q: 0, r: +1 },
@@ -38,13 +40,16 @@ export const getNeighborCoordinates = (characterPosition: ICoordinate) : ICoordi
   }));
 };
 
-export const getNewTile = (center: ICoordinate): ICoordinate[] => {
+export const getNewTile = (
+  center: ICoordinate,
+): ICoordinate[] => {
   const neigbors = getNeighborCoordinates(center);
   return [...neigbors, center];
 };
 
 export const getExploredNeighbors = (
-  hex: ICoordinate, map: ICoordinate[],
+  hex: ICoordinate,
+  map: ICoordinate[],
 ) :ICoordinate[] => {
   const neighbors = getNeighborCoordinates(hex);
 
@@ -54,7 +59,8 @@ export const getExploredNeighbors = (
 };
 
 export const getUnexploredNeighbors = (
-  characterPosition: ICoordinate, map: ICoordinate[],
+  characterPosition: ICoordinate,
+  map: ICoordinate[],
 ) :ICoordinate[] => {
   const neigbors = getNeighborCoordinates(characterPosition);
   return neigbors.filter((neigbor) => {
@@ -108,8 +114,23 @@ export const getNewTileCenter = (
     getHexNeighborCoordinate(hex, Direction.LEFT, directionMap),
   ]];
 
-  if (isCorrectTile(m2, exploredNeighbors, [])) {
-    return { q: hex.q + 1, r: hex.r - 1 };
+  const areNotExprlored2 = [
+    getHexNeighborCoordinate(hex, Direction.UP_LEFT, directionMap),
+  ];
+
+  if (isCorrectTile(m2, exploredNeighbors, areNotExprlored2)) {
+    return getHexNeighborCoordinate(hex, Direction.UP_RIGHT, directionMap);
+  }
+
+  const m3 = [[
+    getHexNeighborCoordinate(hex, Direction.LEFT_DOWN, directionMap),
+  ], [
+    getHexNeighborCoordinate(hex, Direction.LEFT, directionMap),
+    getHexNeighborCoordinate(hex, Direction.UP_LEFT, directionMap),
+  ]];
+
+  if (isCorrectTile(m3, exploredNeighbors, [])) {
+    return getHexNeighborCoordinate(hex, Direction.RIGHT, directionMap);
   }
 
   console.log('No Found!');
