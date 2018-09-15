@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { HexGrid, Layout, Pattern } from 'react-hexgrid';
 import Hex from '../../../components/Hex';
-import { map as gameMap } from '../../../placeholderData';
+import { map as gameMap, mapWithDesign } from '../../../placeholderData';
 import {
   areNeighbors,
   getUnexploredNeighbors,
@@ -35,34 +35,75 @@ interface IState {
 
 const MAP_CONFIG = {
   HEIGHT: 800,
-  HEXAGON_SIZE: { x: 3.5, y: 3.5 },
+  HEXAGON_SIZE: { x: 5, y: 5 },
+  PATTERN_SIZE: { x: 4.3, y: 5 },
   ORIGIN: { x: -4, y: -4 },
   SPACING: 1.01,
   WIDTH: 800,
 };
 
-class Map extends React.PureComponent<{}, IState> {
-  public state = {
-    map: gameMap,
-    playerPosition: {
-      q: 0,
-      r: 0,
-    },
-  };
+const patterrns = [{
+  size: MAP_CONFIG.PATTERN_SIZE,
+  id: 'pat-2',
+  link: 'hexes/startTile.png',
+}, {
+  size: MAP_CONFIG.PATTERN_SIZE,
+  id: 'pat-3',
+  link: 'hexes/startTile2.png',
+}, {
+  size: MAP_CONFIG.PATTERN_SIZE,
+  id: 'pat-4',
+  link: 'hexes/startTile3.png',
+}, {
+  size: MAP_CONFIG.PATTERN_SIZE,
+  id: 'pat-5',
+  link: 'hexes/startTile4.png',
+}, {
+  size: MAP_CONFIG.PATTERN_SIZE,
+  id: 'pat-7',
+  link: 'hexes/startTile6.png',
+}, {
+  size: MAP_CONFIG.PATTERN_SIZE,
+  id: 'pat-8',
+  link: 'hexes/startTile7.png',
+}, {
+  size: MAP_CONFIG.PATTERN_SIZE,
+  id: 'pat-6',
+  link: 'hexes/startTile5.png',
+}, {
+  size: MAP_CONFIG.PATTERN_SIZE,
+  id: 'pat-1',
+  link: 'https://www.lunapic.com/editor/premade/transparent.gif',
+}];
 
-  public exploreTile = (tile: IPosition): void => {
+class Map extends React.PureComponent<{}, IState> {
+  constructor(props: {}) {
+    super(props);
+    this.setPlayerPosition = this.setPlayerPosition.bind(this);
+    this.exploreTile = this.exploreTile.bind(this);
+
+    this.state = {
+      map: gameMap,
+      playerPosition: {
+        q: 0,
+        r: 0,
+      },
+    };
+  }
+
+  public exploreTile(tile: IPosition): void {
     const newTileCenter = getNewTileCenter(tile, this.state.map);
     const newTile = getNewTile(newTileCenter);
     const newMap = [...this.state.map, ...newTile];
     this.setState({ map: newMap });
   }
 
-  public setPlayerPosition = ({ q, r } : IPosition): void => {
-    if (!areNeighbors(this.state.playerPosition, { q, r })) {
+  public setPlayerPosition(hex : IPosition): void {
+    if (!areNeighbors(this.state.playerPosition, hex)) {
       return;
     }
-    const playerPosition = { q, r };
-    this.setState({ playerPosition });
+
+    this.setState({ playerPosition: { ...hex } });
   }
 
   public render() {
@@ -87,19 +128,23 @@ class Map extends React.PureComponent<{}, IState> {
             ))}
           {unexploredNeighbors.map(coordinate => (
             <HexUnexplored
-              {...coordinate}
               key={`${coordinate.q}${coordinate.r}`}
+              {...coordinate}
               onClick={this.exploreTile}
               neighbor={true}
             />
           ))}
+          {mapWithDesign.map(tile => (
+            <HexStyled
+              key={tile.fill}
+              {...tile}
+              neighbor={areNeighbors(this.state.playerPosition, tile)}
+              onClick={this.setPlayerPosition}
+            />
+          ))}
           <Hex q={this.state.playerPosition.q} r={this.state.playerPosition.r} fill={'pat-1'}/>
         </Layout>
-        <Pattern
-          size={MAP_CONFIG.HEXAGON_SIZE}
-          id="pat-1"
-          link="https://www.lunapic.com/editor/premade/transparent.gif"
-        />
+        {patterrns.map(pattern => <Pattern key={pattern.id} {...pattern} />)}
       </HexGrid>
     );
   }

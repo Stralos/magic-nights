@@ -1,6 +1,6 @@
 /* tslint:disable:no-console */
 import ICoordinate from '../../../models/ICoordinate';
-import Direction from '../../../models/Directions';
+import Direction  from '../../../models/Directions';
 
 const getDirectionMap = (): Map<Direction, ICoordinate> => {
   return new Map<Direction, ICoordinate>([
@@ -129,8 +129,23 @@ export const getNewTileCenter = (
     getHexNeighborCoordinate(hex, Direction.UP_LEFT, directionMap),
   ]];
 
+  /*
+  const areNotExprlored3 = [
+    getHexNeighborCoordinate(hex, Direction.UP_RIGHT, directionMap),
+  ];
+  */
+
   if (isCorrectTile(m3, exploredNeighbors, [])) {
     return getHexNeighborCoordinate(hex, Direction.RIGHT, directionMap);
+  }
+
+  const m4 = [[
+    getHexNeighborCoordinate(hex, Direction.UP_RIGHT, directionMap),
+    getHexNeighborCoordinate(hex, Direction.UP_LEFT, directionMap),
+  ]];
+
+  if (isCorrectTile(m4, exploredNeighbors, [])) {
+    return getHexNeighborCoordinate(hex, Direction.RIGHT_DOWN, directionMap);
   }
 
   console.log('No Found!');

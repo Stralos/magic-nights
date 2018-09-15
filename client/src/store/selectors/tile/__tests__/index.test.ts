@@ -105,4 +105,15 @@ describe('Tile selector', () => {
 
     expect(getNewTileCenter(hex, map)).toEqual({ q: 3, r: -2 });
   });
+
+  it('should return center tile when exploring hex 1 from top', () => {
+    const hex: ICoordinate = { q: 3, r: -3 };
+    const map: ICoordinate[] = [
+      { q: 2, r: -4 },
+      { q: 3, r: -4 },
+      { q: 4, r: -4 },
+    ];
+
+    expect(getNewTileCenter(hex, map)).toEqual({ q: 3, r: -2 });
+  });
 });
