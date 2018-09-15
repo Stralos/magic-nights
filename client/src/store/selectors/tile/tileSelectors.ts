@@ -1,31 +1,18 @@
 /* tslint:disable:no-console */
 import ICoordinate from '../../../models/ICoordinate';
-import Direction  from '../../../models/Directions';
+import { Direction2 }  from '../../../models/Directions';
 
-const getDirectionMap = (): Map<Direction, ICoordinate> => {
-  return new Map<Direction, ICoordinate>([
-    [Direction.UP_LEFT, { q: 0, r: -1 }],
-    [Direction.UP_RIGHT, { q: 1, r: -1 }],
-    [Direction.RIGHT, { q: 1, r: 0 }],
-    [Direction.RIGHT_DOWN, { q: 0, r: 1 }],
-    [Direction.LEFT_DOWN, { q: -1, r: 1 }],
-    [Direction.LEFT, { q: -1, r: 0 }],
-  ]);
-};
-
-const getHexNeighborCoordinate = (
+const getNewHexCoordinate = (
   hex: ICoordinate,
-  direction: Direction,
-  directionMap: Map<Direction, ICoordinate>,
-) :ICoordinate => {
-  const directionShift = directionMap.get(direction);
-
-  if (directionShift == null) {
-    throw Error('Problem!');
-  }
-
-  return { q: hex.q + directionShift.q, r: hex.r + directionShift.r };
-};
+  directions: ICoordinate[],
+) :ICoordinate =>
+directions.reduce(
+  (accumulator, currentValue) => ({
+    q: accumulator.q + currentValue.q,
+    r: accumulator.r + currentValue.r,
+  }),
+  hex,
+);
 
 export const getNeighborCoordinates = (
   characterPosition: ICoordinate,
@@ -43,8 +30,8 @@ export const getNeighborCoordinates = (
 export const getNewTile = (
   center: ICoordinate,
 ): ICoordinate[] => {
-  const neigbors = getNeighborCoordinates(center);
-  return [...neigbors, center];
+  const neighbors = getNeighborCoordinates(center);
+  return [...neighbors, center];
 };
 
 export const getExploredNeighbors = (
@@ -91,42 +78,41 @@ export const getNewTileCenter = (
     ));
   };
 
-  const directionMap = getDirectionMap();
   const exploredNeighbors = getExploredNeighbors(hex, map);
 
   const mustBeExplored = [[
-    getHexNeighborCoordinate(hex, Direction.LEFT_DOWN, directionMap),
-    getHexNeighborCoordinate(hex, Direction.RIGHT_DOWN, directionMap),
+    getNewHexCoordinate(hex, [Direction2.LEFT_DOWN]),
+    getNewHexCoordinate(hex, [Direction2.RIGHT_DOWN]),
   ], [
-    getHexNeighborCoordinate(hex, Direction.RIGHT, directionMap),
+    getNewHexCoordinate(hex, [Direction2.RIGHT]),
   ]];
 
   const areNotExploredTiles = [
-    getHexNeighborCoordinate(hex, Direction.LEFT, directionMap),
+    getNewHexCoordinate(hex, [Direction2.LEFT]),
   ];
 
   if (isCorrectTile(mustBeExplored, exploredNeighbors, areNotExploredTiles)) {
-    return getHexNeighborCoordinate(hex, Direction.UP_LEFT, directionMap);
+    return getNewHexCoordinate(hex, [Direction2.UP_LEFT]);
   }
 
   const m2 = [[
-    getHexNeighborCoordinate(hex, Direction.LEFT_DOWN, directionMap),
-    getHexNeighborCoordinate(hex, Direction.LEFT, directionMap),
+    getNewHexCoordinate(hex, [Direction2.LEFT_DOWN]),
+    getNewHexCoordinate(hex, [Direction2.LEFT]),
   ]];
 
   const areNotExprlored2 = [
-    getHexNeighborCoordinate(hex, Direction.UP_LEFT, directionMap),
+    getNewHexCoordinate(hex, [Direction2.UP_LEFT]),
   ];
 
   if (isCorrectTile(m2, exploredNeighbors, areNotExprlored2)) {
-    return getHexNeighborCoordinate(hex, Direction.UP_RIGHT, directionMap);
+    return getNewHexCoordinate(hex, [Direction2.UP_RIGHT]);
   }
 
   const m3 = [[
-    getHexNeighborCoordinate(hex, Direction.LEFT_DOWN, directionMap),
+    getNewHexCoordinate(hex, [Direction2.LEFT_DOWN]),
   ], [
-    getHexNeighborCoordinate(hex, Direction.LEFT, directionMap),
-    getHexNeighborCoordinate(hex, Direction.UP_LEFT, directionMap),
+    getNewHexCoordinate(hex, [Direction2.LEFT]),
+    getNewHexCoordinate(hex, [Direction2.UP_LEFT]),
   ]];
 
   /*
@@ -136,16 +122,16 @@ export const getNewTileCenter = (
   */
 
   if (isCorrectTile(m3, exploredNeighbors, [])) {
-    return getHexNeighborCoordinate(hex, Direction.RIGHT, directionMap);
+    return getNewHexCoordinate(hex, [Direction2.RIGHT]);
   }
 
   const m4 = [[
-    getHexNeighborCoordinate(hex, Direction.UP_RIGHT, directionMap),
-    getHexNeighborCoordinate(hex, Direction.UP_LEFT, directionMap),
+    getNewHexCoordinate(hex, [Direction2.UP_RIGHT]),
+    getNewHexCoordinate(hex, [Direction2.UP_LEFT]),
   ]];
 
   if (isCorrectTile(m4, exploredNeighbors, [])) {
-    return getHexNeighborCoordinate(hex, Direction.RIGHT_DOWN, directionMap);
+    return getNewHexCoordinate(hex, [Direction2.RIGHT_DOWN]);
   }
 
   console.log('No Found!');
