@@ -80,7 +80,8 @@ export const getNewTileCenter = (
   };
 
   const exploredNeighbors = getExploredNeighbors(hex, map);
-
+// -----------------------------------------------------------------------------
+// Tile 4
   const mustBeExplored = [[
     getNewHexCoordinate(hex, [Direction.LEFT_DOWN]),
     getNewHexCoordinate(hex, [Direction.RIGHT_DOWN]),
@@ -90,49 +91,85 @@ export const getNewTileCenter = (
 
   const areNotExploredTiles = [
     getNewHexCoordinate(hex, [Direction.LEFT]),
+    getNewHexCoordinate(hex, [Direction.UP_RIGHT]),
   ];
 
   if (isCorrectTile(mustBeExplored, exploredNeighbors, areNotExploredTiles)) {
     return getNewHexCoordinate(hex, [Direction.UP_LEFT]);
   }
-
-  const m2 = [[
+// -----------------------------------------------------------------------------
+// Tile 5
+  const mustBeExplored2 = [[
     getNewHexCoordinate(hex, [Direction.LEFT_DOWN]),
     getNewHexCoordinate(hex, [Direction.LEFT]),
+  ], [
+    getNewHexCoordinate(hex, [Direction.RIGHT_DOWN]),
   ]];
 
-  const areNotExprlored2 = [
+  const areNotExploredTiles2 = [
     getNewHexCoordinate(hex, [Direction.UP_LEFT]),
   ];
 
-  if (isCorrectTile(m2, exploredNeighbors, areNotExprlored2)) {
+  if (isCorrectTile(mustBeExplored2, exploredNeighbors, areNotExploredTiles2)) {
     return getNewHexCoordinate(hex, [Direction.UP_RIGHT]);
   }
-
-  const m3 = [[
+// -----------------------------------------------------------------------------
+// tile 6
+  const mustBeExplored3 = [[
     getNewHexCoordinate(hex, [Direction.LEFT_DOWN]),
   ], [
     getNewHexCoordinate(hex, [Direction.LEFT]),
     getNewHexCoordinate(hex, [Direction.UP_LEFT]),
   ]];
 
-  /*
-  const areNotExprlored3 = [
-    getHexNeighborCoordinate(hex, Direction.UP_RIGHT, directionMap),
+  const areNotExploredTiles3 = [
+    getNewHexCoordinate(hex, [Direction.UP_RIGHT]),
   ];
-  */
 
-  if (isCorrectTile(m3, exploredNeighbors, [])) {
+  if (isCorrectTile(mustBeExplored3, exploredNeighbors, areNotExploredTiles3)) {
     return getNewHexCoordinate(hex, [Direction.RIGHT]);
   }
-
-  const m4 = [[
+// -----------------------------------------------------------------------------
+// tile 1
+  const mustBeExplored4 = [[
     getNewHexCoordinate(hex, [Direction.UP_RIGHT]),
     getNewHexCoordinate(hex, [Direction.UP_LEFT]),
+  ], [
+    getNewHexCoordinate(hex, [Direction.LEFT]),
   ]];
 
-  if (isCorrectTile(m4, exploredNeighbors, [])) {
+  const areNotExploredTiles4 = [
+    getNewHexCoordinate(hex, [Direction.RIGHT]),
+  ];
+
+  if (isCorrectTile(mustBeExplored4, exploredNeighbors, areNotExploredTiles4)) {
     return getNewHexCoordinate(hex, [Direction.RIGHT_DOWN]);
+  }
+// -----------------------------------------------------------------------------
+// tile 2
+  const mustBeExplored5 = [[
+    getNewHexCoordinate(hex, [Direction.UP_LEFT]),
+  ], [
+    getNewHexCoordinate(hex, [Direction.UP_RIGHT]),
+    getNewHexCoordinate(hex, [Direction.RIGHT]),
+  ]];
+
+  const areNotExploredTiles5 = [
+    getNewHexCoordinate(hex, [Direction.RIGHT_DOWN]),
+  ];
+  if (isCorrectTile(mustBeExplored5, exploredNeighbors, areNotExploredTiles5)) {
+    return getNewHexCoordinate(hex, [Direction.LEFT_DOWN]);
+  }
+// -----------------------------------------------------------------------------
+// tile 3
+  const mustBeExplored6 = [[
+    getNewHexCoordinate(hex, [Direction.UP_RIGHT]),
+  ], [
+    getNewHexCoordinate(hex, [Direction.RIGHT]),
+    getNewHexCoordinate(hex, [Direction.RIGHT_DOWN]),
+  ]];
+  if (isCorrectTile(mustBeExplored6, exploredNeighbors, [])) {
+    return getNewHexCoordinate(hex, [Direction.LEFT]);
   }
 
   console.log('No Found!');

@@ -98,6 +98,14 @@ describe('Tile selector', () => {
     expect(getNewTileCenter(hex, map)).toEqual(moveHex(hex, [Direction.UP_RIGHT]));
   });
 
+  it('should return center tile when exploring hex 5 from the bottom', () => {
+    const hex: ICoordinate = { q: 0, r: 0 };
+    const map: ICoordinate[] = [
+      moveHex(hex, [Direction.RIGHT_DOWN]),
+    ];
+    expect(getNewTileCenter(hex, map)).toEqual(moveHex(hex, [Direction.UP_RIGHT]));
+  });
+
   it('should return center tile when exploring hex 6 from bottom', () => {
     const hex: ICoordinate = { q: 0, r: 0 };
     const map: ICoordinate[] = [
@@ -109,7 +117,6 @@ describe('Tile selector', () => {
   it('should return center tile when exploring hex 6 from left', () => {
     const hex: ICoordinate = { q: 0, r: 0 };
     const map: ICoordinate[] = [
-      moveHex(hex, [Direction.LEFT_DOWN]),
       moveHex(hex, [Direction.LEFT]),
       moveHex(hex, [Direction.UP_LEFT]),
     ];
@@ -120,11 +127,55 @@ describe('Tile selector', () => {
   it('should return center tile when exploring hex 1 from top', () => {
     const hex: ICoordinate = { q: 0, r: 0 };
     const map: ICoordinate[] = [
-      moveHex(hex, [Direction.LEFT, Direction.UP_LEFT]), // <--- probably not needed
       moveHex(hex, [Direction.UP_LEFT]),
       moveHex(hex, [Direction.UP_RIGHT]),
     ];
 
     expect(getNewTileCenter(hex, map)).toEqual(moveHex(hex, [Direction.RIGHT_DOWN]));
+  });
+
+  it('should return center tile when exploring hex 1 from left', () => {
+    const hex: ICoordinate = { q: 0, r: 0 };
+    const map: ICoordinate[] = [
+      moveHex(hex, [Direction.LEFT]),
+    ];
+    expect(getNewTileCenter(hex, map)).toEqual(moveHex(hex, [Direction.RIGHT_DOWN]));
+  });
+
+  it('should return center tile when exploring hex 2 from the top', () => {
+    const hex: ICoordinate = { q: 0, r: 0 };
+    const map: ICoordinate[] = [
+      moveHex(hex, [Direction.UP_LEFT]),
+    ];
+
+    expect(getNewTileCenter(hex, map)).toEqual(moveHex(hex, [Direction.LEFT_DOWN]));
+  });
+
+  it('should return center tile when exploring hex 2 from the right', () => {
+    const hex: ICoordinate = { q: 0, r: 0 };
+    const map: ICoordinate[] = [
+      moveHex(hex, [Direction.UP_RIGHT]),
+      moveHex(hex, [Direction.RIGHT]),
+    ];
+
+    expect(getNewTileCenter(hex, map)).toEqual(moveHex(hex, [Direction.LEFT_DOWN]));
+  });
+
+  it('should return center tile when exploring hex 3 from the top', () => {
+    const hex: ICoordinate = { q: 0, r: 0 };
+    const map: ICoordinate[] = [
+      moveHex(hex, [Direction.UP_RIGHT]),
+    ];
+
+    expect(getNewTileCenter(hex, map)).toEqual(moveHex(hex, [Direction.LEFT]));
+  });
+
+  it('should return center tile when exploring hex 3 from the bottom', () => {
+    const hex: ICoordinate = { q: 0, r: 0 };
+    const map: ICoordinate[] = [
+      moveHex(hex, [Direction.RIGHT]),
+      moveHex(hex, [Direction.RIGHT_DOWN]),
+    ];
+    expect(getNewTileCenter(hex, map)).toEqual(moveHex(hex, [Direction.LEFT]));
   });
 });
