@@ -32,7 +32,7 @@ export const isHexExplored = (
   hex: ICoordinate,
   map: ICoordinate[],
 ): boolean => (
-  !!map.find(mapCoordinate => areCoordinatesEqual(hex, mapCoordinate))
+  map.some(mapCoordinate => areCoordinatesEqual(hex, mapCoordinate))
 );
 
 export const getNeighborCoordinates = (
@@ -61,10 +61,7 @@ export const getExploredNeighbors = (
   map: ICoordinate[],
 ) :ICoordinate[] => {
   const neighbors = getNeighborCoordinates(hex);
-
-  return neighbors.filter((neighbor) => {
-    return map.some(coordinate => coordinate.q === neighbor.q && coordinate.r === neighbor.r);
-  });
+  return neighbors.filter(neighbor => isHexExplored(neighbor, map));
 };
 
 export const getUnexploredNeighbors = (
@@ -72,15 +69,11 @@ export const getUnexploredNeighbors = (
   map: ICoordinate[],
 ) :ICoordinate[] => {
   const neighbors = getNeighborCoordinates(characterPosition);
-  return neighbors.filter((neighbor) => {
-    return !map.some(coordinate => coordinate.q === neighbor.q && coordinate.r === neighbor.r);
-  });
+  return neighbors.filter(neighbor => !isHexExplored(neighbor, map));
 };
 
 export const areNeighbors = (tile1: ICoordinate, tile2: ICoordinate): boolean => {
-  return getNeighborCoordinates(tile1).some((neighbor) => {
-    return neighbor.q === tile2.q && neighbor.r === tile2.r;
-  });
+  return isHexExplored(tile1, getNeighborCoordinates(tile2));
 };
 
 export const getTileExplorationMap = (hex: ICoordinate) :CenterTileFinder[]  => {
@@ -199,7 +192,6 @@ export const getNewTileCenter = (
       if (notTouching.some(tileCoordinate => isHexExplored(tileCoordinate, exploredNeighbors))) {
         return false;
       }
-
       return true;
     });
 

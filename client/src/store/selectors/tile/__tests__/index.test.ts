@@ -5,6 +5,7 @@ import {
   getNeighborCoordinates,
   getUnexploredNeighbors,
   getExploredNeighbors,
+  getNewTile,
   getNewTileCenter,
   isHexExplored,
   areCoordinatesEqual,
@@ -20,6 +21,20 @@ function moveHex(hex: ICoordinate, movement: ICoordinate[]) {
   );
 }
 describe('Tile selector', () => {
+  it('should return a new tile, based on center coordinates', () => {
+    const hex = { q: 0, r: 0 };
+    const expectedCoordinates = [
+      moveHex(hex, [Direction.RIGHT]),
+      moveHex(hex, [Direction.UP_RIGHT]),
+      moveHex(hex, [Direction.UP_LEFT]),
+      moveHex(hex, [Direction.LEFT]),
+      moveHex(hex, [Direction.LEFT_DOWN]),
+      moveHex(hex, [Direction.RIGHT_DOWN]),
+      { ...hex },
+    ];
+    expect(getNewTile(hex)).toEqual(expectedCoordinates);
+  });
+
   it('should return neighbor coordinates', () => {
     const playerPosition: ICoordinate = { q: 0, r: 0 };
     const expectedNeighborCoordinates: ICoordinate[] = [
@@ -34,7 +49,7 @@ describe('Tile selector', () => {
     expect(neighbors).toEqual(expectedNeighborCoordinates);
   });
 
-  it('it should return true if both tiles are neighbors', () => {
+  it('should return true if both tiles are neighbors', () => {
     const tile1: ICoordinate = moveHex({ q: 0, r: 0 }, [Direction.RIGHT]);
     const tile2: ICoordinate = moveHex({ q: 0, r: 0 }, [Direction.RIGHT_DOWN]);
     const result = areNeighbors(tile1, tile2);
