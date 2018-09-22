@@ -2,6 +2,13 @@
 import ICoordinate from '../../../models/ICoordinate';
 import Direction from '../../../models/Directions';
 
+interface CenterTileFinder {
+  id: number;
+  touching: ICoordinate[];
+  notTouching: ICoordinate[];
+  center: ICoordinate;
+}
+
 const getNewHexCoordinate = (
   hex: ICoordinate,
   directions: ICoordinate[],
@@ -12,6 +19,20 @@ directions.reduce(
     r: accumulator.r + currentValue.r,
   }),
   hex,
+);
+
+export const areCoordinatesEqual = (
+  c1: ICoordinate,
+  c2: ICoordinate,
+) :boolean => (
+  c1.q === c2.q && c1.r === c2.r)
+;
+
+export const isHexExplored = (
+  hex: ICoordinate,
+  map: ICoordinate[],
+): boolean => (
+  !!map.find(mapCoordinate => areCoordinatesEqual(hex, mapCoordinate))
 );
 
 export const getNeighborCoordinates = (
@@ -62,10 +83,129 @@ export const areNeighbors = (tile1: ICoordinate, tile2: ICoordinate): boolean =>
   });
 };
 
+export const getTileExplorationMap = (hex: ICoordinate) :CenterTileFinder[]  => {
+  return [{
+    id: 1,
+    touching: [
+      getNewHexCoordinate(hex, [Direction.LEFT_DOWN]),
+      getNewHexCoordinate(hex, [Direction.RIGHT_DOWN]),
+    ],
+    notTouching: [
+      getNewHexCoordinate(hex, [Direction.LEFT]),
+      getNewHexCoordinate(hex, [Direction.UP_RIGHT]),
+    ],
+    center: getNewHexCoordinate(hex, [Direction.UP_LEFT]),
+  }, {
+    id: 2,
+    touching: [
+      getNewHexCoordinate(hex, [Direction.RIGHT]),
+    ],
+    notTouching: [
+      getNewHexCoordinate(hex, [Direction.UP_RIGHT]),
+      getNewHexCoordinate(hex, [Direction.RIGHT_DOWN]),
+    ],
+    center: getNewHexCoordinate(hex, [Direction.UP_LEFT]),
+  }, {
+    id: 3, // tile 5
+    touching: [
+      getNewHexCoordinate(hex, [Direction.LEFT_DOWN]),
+      getNewHexCoordinate(hex, [Direction.LEFT]),
+    ],
+    notTouching: [
+      getNewHexCoordinate(hex, [Direction.UP_LEFT]),
+      getNewHexCoordinate(hex, [Direction.RIGHT]),
+    ],
+    center: getNewHexCoordinate(hex, [Direction.UP_RIGHT]),
+  }, {
+    id: 4, // tile 5
+    touching: [
+      getNewHexCoordinate(hex, [Direction.RIGHT_DOWN]),
+    ],
+    notTouching: [
+      getNewHexCoordinate(hex, [Direction.UP_LEFT]),
+      getNewHexCoordinate(hex, [Direction.RIGHT]),
+    ],
+    center: getNewHexCoordinate(hex, [Direction.UP_RIGHT]),
+  }, {
+    id: 5, // tile 6
+    touching: [
+      getNewHexCoordinate(hex, [Direction.LEFT_DOWN]),
+    ],
+    notTouching: [
+      getNewHexCoordinate(hex, [Direction.UP_RIGHT]),
+    ],
+    center: getNewHexCoordinate(hex, [Direction.RIGHT]),
+  }, {
+    id: 6, // tile 6
+    touching: [
+      getNewHexCoordinate(hex, [Direction.LEFT]),
+      getNewHexCoordinate(hex, [Direction.UP_LEFT]),
+    ],
+    notTouching: [
+      getNewHexCoordinate(hex, [Direction.UP_RIGHT]),
+    ],
+    center: getNewHexCoordinate(hex, [Direction.RIGHT]),
+  }, {
+    id: 7, // tile 1
+    touching: [
+      getNewHexCoordinate(hex, [Direction.UP_RIGHT]),
+      getNewHexCoordinate(hex, [Direction.UP_LEFT]),
+    ],
+    notTouching: [
+      getNewHexCoordinate(hex, [Direction.RIGHT]),
+    ],
+    center: getNewHexCoordinate(hex, [Direction.RIGHT_DOWN]),
+  }, {
+    id: 8, // tile 1
+    touching: [
+      getNewHexCoordinate(hex, [Direction.LEFT]),
+    ],
+    notTouching: [
+      getNewHexCoordinate(hex, [Direction.RIGHT]),
+    ],
+    center: getNewHexCoordinate(hex, [Direction.RIGHT_DOWN]),
+  }, {
+    id: 9, // tile 2
+    touching: [
+      getNewHexCoordinate(hex, [Direction.UP_LEFT]),
+    ],
+    notTouching: [
+      getNewHexCoordinate(hex, [Direction.RIGHT_DOWN]),
+    ],
+    center: getNewHexCoordinate(hex, [Direction.LEFT_DOWN]),
+  }, {
+    id: 9, // tile 2
+    touching: [
+      getNewHexCoordinate(hex, [Direction.UP_RIGHT]),
+      getNewHexCoordinate(hex, [Direction.RIGHT]),
+    ],
+    notTouching: [
+      getNewHexCoordinate(hex, [Direction.RIGHT_DOWN]),
+    ],
+    center: getNewHexCoordinate(hex, [Direction.LEFT_DOWN]),
+  }];
+};
+
 export const getNewTileCenter = (
   hex: ICoordinate,
   map: ICoordinate[],
 ): ICoordinate => {
+  const exploredNeighbors = getExploredNeighbors(hex, map);
+  const tileFinder = getTileExplorationMap(hex)
+    .find(({ touching, notTouching }) => {
+      if (!touching.every(tileCoordinate => isHexExplored(tileCoordinate, exploredNeighbors))) {
+        return false;
+      }
+      if (notTouching.some(tileCoordinate => isHexExplored(tileCoordinate, exploredNeighbors))) {
+        return false;
+      }
+
+      return true;
+    });
+
+  if (tileFinder != null) {
+    return tileFinder.center;
+  }
   const isCorrectTile = (
     mmm: ICoordinate[][],
     neighbors: ICoordinate[],
@@ -78,89 +218,6 @@ export const getNewTileCenter = (
       d => !!neighbors.find(neighbor => neighbor.q === d.q && neighbor.r === d.r),
     ));
   };
-
-  const exploredNeighbors = getExploredNeighbors(hex, map);
-// -----------------------------------------------------------------------------
-// Tile 4
-  const mustBeExplored = [[
-    getNewHexCoordinate(hex, [Direction.LEFT_DOWN]),
-    getNewHexCoordinate(hex, [Direction.RIGHT_DOWN]),
-  ], [
-    getNewHexCoordinate(hex, [Direction.RIGHT]),
-  ]];
-
-  const areNotExploredTiles = [
-    getNewHexCoordinate(hex, [Direction.LEFT]),
-    getNewHexCoordinate(hex, [Direction.UP_RIGHT]),
-  ];
-
-  if (isCorrectTile(mustBeExplored, exploredNeighbors, areNotExploredTiles)) {
-    return getNewHexCoordinate(hex, [Direction.UP_LEFT]);
-  }
-// -----------------------------------------------------------------------------
-// Tile 5
-  const mustBeExplored2 = [[
-    getNewHexCoordinate(hex, [Direction.LEFT_DOWN]),
-    getNewHexCoordinate(hex, [Direction.LEFT]),
-  ], [
-    getNewHexCoordinate(hex, [Direction.RIGHT_DOWN]),
-  ]];
-
-  const areNotExploredTiles2 = [
-    getNewHexCoordinate(hex, [Direction.UP_LEFT]),
-  ];
-
-  if (isCorrectTile(mustBeExplored2, exploredNeighbors, areNotExploredTiles2)) {
-    return getNewHexCoordinate(hex, [Direction.UP_RIGHT]);
-  }
-// -----------------------------------------------------------------------------
-// tile 6
-  const mustBeExplored3 = [[
-    getNewHexCoordinate(hex, [Direction.LEFT_DOWN]),
-  ], [
-    getNewHexCoordinate(hex, [Direction.LEFT]),
-    getNewHexCoordinate(hex, [Direction.UP_LEFT]),
-  ]];
-
-  const areNotExploredTiles3 = [
-    getNewHexCoordinate(hex, [Direction.UP_RIGHT]),
-  ];
-
-  if (isCorrectTile(mustBeExplored3, exploredNeighbors, areNotExploredTiles3)) {
-    return getNewHexCoordinate(hex, [Direction.RIGHT]);
-  }
-// -----------------------------------------------------------------------------
-// tile 1
-  const mustBeExplored4 = [[
-    getNewHexCoordinate(hex, [Direction.UP_RIGHT]),
-    getNewHexCoordinate(hex, [Direction.UP_LEFT]),
-  ], [
-    getNewHexCoordinate(hex, [Direction.LEFT]),
-  ]];
-
-  const areNotExploredTiles4 = [
-    getNewHexCoordinate(hex, [Direction.RIGHT]),
-  ];
-
-  if (isCorrectTile(mustBeExplored4, exploredNeighbors, areNotExploredTiles4)) {
-    return getNewHexCoordinate(hex, [Direction.RIGHT_DOWN]);
-  }
-// -----------------------------------------------------------------------------
-// tile 2
-  const mustBeExplored5 = [[
-    getNewHexCoordinate(hex, [Direction.UP_LEFT]),
-  ], [
-    getNewHexCoordinate(hex, [Direction.UP_RIGHT]),
-    getNewHexCoordinate(hex, [Direction.RIGHT]),
-  ]];
-
-  const areNotExploredTiles5 = [
-    getNewHexCoordinate(hex, [Direction.RIGHT_DOWN]),
-  ];
-  if (isCorrectTile(mustBeExplored5, exploredNeighbors, areNotExploredTiles5)) {
-    return getNewHexCoordinate(hex, [Direction.LEFT_DOWN]);
-  }
-// -----------------------------------------------------------------------------
 // tile 3
   const mustBeExplored6 = [[
     getNewHexCoordinate(hex, [Direction.UP_RIGHT]),
@@ -171,7 +228,5 @@ export const getNewTileCenter = (
   if (isCorrectTile(mustBeExplored6, exploredNeighbors, [])) {
     return getNewHexCoordinate(hex, [Direction.LEFT]);
   }
-
-  console.log('No Found!');
-  return { q: 100, r: 100 };
+  throw Error(`No placement found for tile based on hex: ${hex}`);
 };

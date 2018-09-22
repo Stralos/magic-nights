@@ -6,6 +6,8 @@ import {
   getUnexploredNeighbors,
   getExploredNeighbors,
   getNewTileCenter,
+  isHexExplored,
+  areCoordinatesEqual,
 } from '../index';
 
 function moveHex(hex: ICoordinate, movement: ICoordinate[]) {
@@ -177,5 +179,37 @@ describe('Tile selector', () => {
       moveHex(hex, [Direction.RIGHT_DOWN]),
     ];
     expect(getNewTileCenter(hex, map)).toEqual(moveHex(hex, [Direction.LEFT]));
+  });
+
+  it('should return true if hex is explored', () => {
+    const hex: ICoordinate = { q: 0, r: 0 };
+    const map: ICoordinate[] = [
+      moveHex(hex, [Direction.RIGHT]),
+      { ...hex },
+    ];
+
+    expect(isHexExplored(hex, map)).toEqual(true);
+  });
+
+  it('should return false if hex is not explored', () => {
+    const hex: ICoordinate = { q: 0, r: 0 };
+    const map: ICoordinate[] = [
+      moveHex(hex, [Direction.RIGHT]),
+      moveHex(hex, [Direction.LEFT]),
+    ];
+
+    expect(isHexExplored(hex, map)).toEqual(false);
+  });
+
+  it('should return true if coordinates are equal', () => {
+    const c1 = { q: 0, r: 1 };
+    const c2 = { r: 1, q: 0 };
+    expect(areCoordinatesEqual(c1, c2)).toEqual(true);
+  });
+
+  it('should return false if coordinates are equal', () => {
+    const c1 = { q: 0, r: 0 };
+    const c2 = { r: 1, q: 0 };
+    expect(areCoordinatesEqual(c1, c2)).toEqual(false);
   });
 });
