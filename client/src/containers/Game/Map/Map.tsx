@@ -8,6 +8,7 @@ import {
   getNewTile,
   getNewTileCenter,
 } from '../../../store/selectors/tile';
+import ICoordinate from '../../../models/ICoordinate';
 import styled from 'styled-components';
 
 const HexStyled = styled(Hex).attrs<any, any>({
@@ -23,14 +24,9 @@ const HexUnexplored = styled(HexStyled)`
   fill: grey;
 `;
 
-interface IPosition {
-  q: number;
-  r: number;
-}
-
 interface IState {
-  playerPosition: IPosition;
-  map: IPosition[];
+  playerPosition: ICoordinate;
+  map: ICoordinate[];
 }
 
 const MAP_CONFIG = {
@@ -72,8 +68,8 @@ const patterrns = [{
   link: 'hexes/startTile5.png',
 }, {
   size: MAP_CONFIG.PATTERN_SIZE,
-  id: 'pat-1',
-  link: 'https://www.lunapic.com/editor/premade/transparent.gif',
+  id: 'pat-character',
+  link: 'characters/penguin.gif',
 }];
 
 class Map extends React.PureComponent<{}, IState> {
@@ -91,14 +87,14 @@ class Map extends React.PureComponent<{}, IState> {
     };
   }
 
-  public exploreTile(tile: IPosition): void {
+  public exploreTile(tile: ICoordinate): void {
     const newTileCenter = getNewTileCenter(tile, this.state.map);
     const newTile = getNewTile(newTileCenter);
     const newMap = [...this.state.map, ...newTile];
     this.setState({ map: newMap });
   }
 
-  public setPlayerPosition(hex : IPosition): void {
+  public setPlayerPosition(hex : ICoordinate): void {
     if (!areNeighbors(this.state.playerPosition, hex)) {
       return;
     }
@@ -142,7 +138,11 @@ class Map extends React.PureComponent<{}, IState> {
               onClick={this.setPlayerPosition}
             />
           ))}
-          <Hex q={this.state.playerPosition.q} r={this.state.playerPosition.r} fill={'pat-1'}/>
+          <Hex
+            q={this.state.playerPosition.q}
+            r={this.state.playerPosition.r}
+            fill={'pat-character'}
+          />
         </Layout>
         {patterrns.map(pattern => <Pattern key={pattern.id} {...pattern} />)}
       </HexGrid>

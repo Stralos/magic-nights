@@ -7,6 +7,14 @@ interface IProps {
   fill?: string;
   onClick?: (obj: { q: number, r: number }) => void;
 }
+/*
+export const StyledText = styled(Text)`
+  font-size: 0.1em;
+  stroke: black;
+`;
+
+<StyledText y={3.5} >A-1</StyledText>
+*/
 
 class Hex extends React.PureComponent<IProps> {
   public render () {

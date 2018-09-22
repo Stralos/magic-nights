@@ -217,7 +217,10 @@ export const getNewTileCenter = (
     getNewHexCoordinate(hex, [Direction.RIGHT]),
     getNewHexCoordinate(hex, [Direction.RIGHT_DOWN]),
   ]];
-  if (isCorrectTile(mustBeExplored6, exploredNeighbors, [])) {
+  const areNotExploredTiles6: ICoordinate[] = [
+  ];
+
+  if (isCorrectTile(mustBeExplored6, exploredNeighbors, areNotExploredTiles6)) {
     return getNewHexCoordinate(hex, [Direction.LEFT]);
   }
   throw Error(`No placement found for tile based on hex: ${hex}`);
